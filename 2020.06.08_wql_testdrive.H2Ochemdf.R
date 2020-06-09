@@ -357,9 +357,35 @@ H2Ochemdf$assumed_PSU <- 28.8
 #*********************************
 ## 8.6 Practical Salinity Units - Final Salinity Value 
 #*********************************
+
+# 8.6a Review of Vectors
+# Review of the three different salinity values
+# H2Ochemdf$PSUperMOATs       measurement
+#           PSUperMOATs       per MOATS per Day
+            PSUperMOATs
+
+# H2Ochemdf$PSUprevObs        Daily Average
+#           PSUavgDaily       measurment across MOATs
+            PSUavgDaily 
+
+# H2Ochemdf$PSUprevObs        Previous Daily 
+#           PSUprevObs        Average to cover those gaps
+            PSUprevObs 
+
+# Sailinity Assumption        28.8
+#           Dates w/o         Dates without measurment 23~30SEP20
+            28.8
+
+
 # Final Salinity
 H2Ochemdf$Final_PSU <- ""
 H2Ochemdf$Final_PSU <- 28.8
+
+# Replace Functino Draft 1- to systematically replace the salinity values
+# replace(H2Ochemdf, Final_PSU, H2Ochemdf$PSUperMOATs)
+# replace(x, list, values)
+
+
 
 
 
