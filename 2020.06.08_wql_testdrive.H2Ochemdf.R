@@ -381,12 +381,32 @@ H2Ochemdf$assumed_PSU <- 28.8
 H2Ochemdf$Final_PSU <- ""
 H2Ochemdf$Final_PSU <- 28.8
 
-# Replace Functino Draft 1- to systematically replace the salinity values
+
+#### UNDER CONSTRUCTION - HELP PLEASE OFFICE HOURS ####
+
+# Replace Function Draft 1- to systematically replace the salinity values
 # replace(H2Ochemdf, Final_PSU, H2Ochemdf$PSUperMOATs)
 # replace(x, list, values)
 
+H2Ochemdf <- H2Ochemdf %>% mutate(Final_PSU=PSUperMOATs= case_when(is.na()))
+
+H2Ochemdf$Final_PSU <- H2Ochemdf$PSUperMOATs=case_when(H2Ochemdf$PSUperMOATs != "NA"))
+
+H2Ochemdf$Final_PSU <- H2Ochemdf %>% mutate(Final_PSU, case_when(is.na())
 
 
+# replace()
+# Replace gsub Function- Draft 2
+# as.character(H2Ochemdf$Final_PSU)
+# as.character(H2Ochemdf$PSUperMOATs)
+# as.character(H2Ochemdf$PSUavgDaily)
+# as.character(H2Ochemdf$PSUprevObs)
+
+# gsub(Final_PSU, PSUperMOATs)
+# # Don't have an x
+
+
+#### UNDER CONSTRUCTION - HELP PLEASE OFFICE HOURS ####
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
