@@ -464,13 +464,22 @@ H2Ochemdf$msr_prnctDO <-""
 H2Ochemdf$assumedSatDOmg <- ""
 H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$assumed_PSU)
 
+Satp <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=assumedSatDOmg))+
+  geom_line()
+Satp
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
-
 # reported DO from labview output
-reportedDOmg <- 3.56
+### - - - - - - - - - |
+### - - - - - - - - - |
+#reportedDOmg <- 3.56 |
+### - - - - - - - - - |
+### - - - - - - - - - |
+  
+    
 # Back calculated fraction DO as reported by the oxygen sensor
 percentDO <- reportedDOmg / assumedSatDOmg
 # observed salinity
