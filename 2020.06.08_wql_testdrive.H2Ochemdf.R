@@ -454,7 +454,7 @@ H2Ochemdf$msr_prnctDO <-""
 
 
 #*********************************
-## 9.2) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation
+## 9.3) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation
 #*********************************
 
 
@@ -471,6 +471,9 @@ Satp
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
+#*********************************
+## 9.4) Creating Percent Dissoved Oxy Value - Reported DOmg
+#*********************************
 
 # reported DO from labview output
 ### - - - - - - - - - |
@@ -479,22 +482,83 @@ Satp
 ### - - - - - - - - - |
 ### - - - - - - - - - |
   
-    
+
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#*********************************
+## 9.5) Creating Percent Dissoved Oxy Value - Percent DO (with assumptions)
+#*********************************
 # Back calculated fraction DO as reported by the oxygen sensor
 percentDO <- reportedDOmg / assumedSatDOmg
+
+
+
+
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+
+#*********************************
+## 9.6) Creating Percent Dissoved Oxy Value - Percent DO (with observed/measured Salinity)
+#*********************************
+
 # observed salinity
-observedS <- 30.1
+### - - - - - - - - - |
+### - - - - - - - - - |
+#observedS <- 30.1 -  |
+### - - - - - - - - - |
+### - - - - - - - - - |
+
+# H2Ochemdf$Final_PSU is the value inside the dataframe after that value judgement
+
+
+
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#*********************************
+## 9.6) Creating Percent Dissoved Oxy Value - Observed Saturated DOmg (measured salinity)
+#*********************************
+
 #satured mg/L at observed temperature and observed (not assumed) salinity
 # obseveredSatDOmg <- oxySol(tMoats, observedS)
 obseveredSatDOmg <- oxySol(sTemperature, observedS)
 
 
 
+
+
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+
+
+#*********************************
+## 9.6) Creating Percent Dissoved Oxy Value - Observed Saturated DOmg (measured salinity)
+#*********************************
 # actual DO mg at observed temperature and salinity
 
 actualDOmg <- percentDO * obseveredSatDOmg
 
 
+
+
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
 
