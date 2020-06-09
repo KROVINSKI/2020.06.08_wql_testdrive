@@ -481,8 +481,9 @@ Satp
 #reportedDOmg <- 3.56 |
 ### - - - - - - - - - |
 ### - - - - - - - - - |
-  
 
+## Values for Reported DO  
+H2Ochemdf$DO
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
@@ -493,11 +494,24 @@ Satp
 ## 9.5) Creating Percent Dissoved Oxy Value - Percent DO (with assumptions)
 #*********************************
 # Back calculated fraction DO as reported by the oxygen sensor
-percentDO <- reportedDOmg / assumedSatDOmg
+
+H2Ochemdf$percentDOassumpt <- ""
+H2Ochemdf$percentDOassumpt <- H2Ochemdf$DO / assumedSatDOmg
+
+
+p5 <- ggplot(H2Ochemdf, aes(x=dateTime, y=assumedSatDOmg)) +
+      geom_point(aes(colour=period, point=))   +
+  ggtitle("Assumed Saturation DO (mg) Values (All Treatments & All MOATs) Colored by Period")
+
+p5
 
 
 
+p6 <- ggplot(H2Ochemdf, aes(x=dateTime, y=percentDOassumpt)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("Percent DO(mg)Values from Assumed Salinity Values (All Treatments & All MOATs) Colored by Period")
 
+p6
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
