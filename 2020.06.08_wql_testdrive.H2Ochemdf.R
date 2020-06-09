@@ -461,8 +461,9 @@ H2Ochemdf$msr_prnctDO <-""
 # saturated mg/L DO at obseved temperature and assumed salinity
 # the oxySol() function is form the wql package
 
-H20chemdf$assumedSatDOmg <- ""
-assumedSatDOmg <- oxySol(sTemperature, assumed_PSU)
+H2Ochemdf$assumedSatDOmg <- ""
+H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$assumed_PSU)
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
