@@ -297,7 +297,9 @@ ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ],
 
 
 #*********************************
-## 8.2 Practical Salinity Units - Salinity Determination (conditional statements)
+## 8.2 Practical Salinity Units - Measurements Per Moats per Day 
+#                                 (Salinity Determination 
+#                                       (conditional statements))
 #*********************************
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
@@ -315,6 +317,11 @@ H2Ochemdf$PSUperMOATs <- all_salinity$salinity[match
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
+
+#*********************************
+## 8.3 Practical Salinity Units - Daily Avg Measurement 
+#*********************************
+
 # All MOATs daily
 H2Ochemdf$PSUavgDaily <- all_salinity$salinity[match
                                     (paste
@@ -326,6 +333,9 @@ H2Ochemdf$PSUavgDaily <- all_salinity$salinity[match
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
+#*********************************
+## 8.4 Practical Salinity Units - Previous Daily Avg Measurement 
+#*********************************
 
 # Previous All MOATs daily
 H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
@@ -333,10 +343,27 @@ H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-# Final conductivity
-H2Ochemdf$Final_PSU <- ""
 
+#*********************************
+## 8.5 Practical Salinity Units - Assumed Salinity Value 
+#*********************************
+H2Ochemdf$assumed_PSU <- ""
+H2Ochemdf$assumed_PSU <- 28.8
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+#*********************************
+## 8.6 Practical Salinity Units - Final Salinity Value 
+#*********************************
+# Final Salinity
+H2Ochemdf$Final_PSU <- ""
 H2Ochemdf$Final_PSU <- 28.8
+
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 # 
 # 
@@ -344,33 +371,27 @@ H2Ochemdf$Final_PSU <- 28.8
 #                               (H2Ochemdf$Conductivity=case_when(
 #                                 # conditional statements - what's the best function to make value determinations? 
 #                               ))
-
-
 # could set to 28.8 and then use the replace function, writing replacements three times
 
 
-
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-
 
 # Final Method used, winning method - maybe we'll delete let's not argue in front of flipper
 # H2Ochemdf$CONDmsrMethod <- ""
 
 
- 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
 
 #*********************************
 ## 9.) Creating Percent Dissoved Oxy Value   
 #*********************************
-# percent dissolved oxygen prcntDO
-H2Ochemdf$lb_prcntDO <- ""
-H2Ochemdf$msr_prnctDO <-""
 
-
+## Review of the wql library and the functions in that package
+# Review the Oxygen Solubility 
+#
 #library with function that does DO saturation calculation
 #library(wql)
-
 # The Library wql
 # # Functions to assist in the processing and
 # exploration of data from environmental monitoring programs.
@@ -383,13 +404,70 @@ H2Ochemdf$msr_prnctDO <-""
 # similar-frequency time series regardless of the subject
 # matter.
 
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+#*********************************
+## 9.1) Creating Percent Dissoved Oxy Value - creating variables  
+#*********************************
+
+# Creating and naming the DO values
+# percent dissolved oxygen prcntDO
+# lab view persent of dissolved oygen
+H2Ochemdf$lb_prcntDO <- ""
+# measured percent of dissolved oxygen 
+H2Ochemdf$msr_prnctDO <-""
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+#*********************************
+## 9.2) Creating Percent Dissoved Oxy Value - changes to the patch
+#*********************************
+
 #observed temperature of the MOATS
-tMoats <- 12.01
-# assumed salinity of MOATS for labiew calculation
-assumedS <- 28.8
+# Physical Description of the MOATS
+#sTemperature is the "system temperature". The DO probe sat in the "lower box".
+#                 The lower box, was the supply water
+#                 sat in conjunction with the short omegaL thermister and pH probe.
+#sTemperature - System Temperature
+
+### - - - - - - - - - | 
+### Paul Patch - - - -|
+### tMoats <- 12.01 - |
+### - - - - - - - - - |
+
+
+# assumed Salinity of MOATS for labiew calculation
+# 
+### - - - - - - - - - | 
+### Paul Patch - - - -|
+### assumedS <- 28.8  |
+### - - - - - - - - - |
+
+# assumed_PSU is set to 28.8 
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+#*********************************
+## 9.2) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation
+#*********************************
+
+
 # saturated mg/L DO at obseved temperature and assumed salinity
 # the oxySol() function is form the wql package
-assumedSatDOmg <- oxySol(tMoats,assumedS)
+
+H20chemdf$assumedSatDOmg <- ""
+assumedSatDOmg <- oxySol(sTemperature, assumed_PSU)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 # reported DO from labview output
 reportedDOmg <- 3.56
 # Back calculated fraction DO as reported by the oxygen sensor
@@ -397,8 +475,13 @@ percentDO <- reportedDOmg / assumedSatDOmg
 # observed salinity
 observedS <- 30.1
 #satured mg/L at observed temperature and observed (not assumed) salinity
-obseveredSatDOmg <- oxySol(tMoats, observedS)
+# obseveredSatDOmg <- oxySol(tMoats, observedS)
+obseveredSatDOmg <- oxySol(sTemperature, observedS)
+
+
+
 # actual DO mg at observed temperature and salinity
+
 actualDOmg <- percentDO * obseveredSatDOmg
 
 
