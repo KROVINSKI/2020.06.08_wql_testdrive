@@ -62,6 +62,7 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication 
 #*********************************
 ## 2. Calling & Reading in " dml " 
 #*********************************
+#### START OF SIMPLE DML DATAFRAME ####
 
 #dml <- read.csv(file = "M01thruM13moatslog_n17.csv", stringsAsFactors = FALSE)
 #dim(dml)
@@ -131,13 +132,14 @@ dim(dml)
 ## 6.) Creating Night and Day Periods  
 #*********************************
 
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
 ## 6.1 Narrative (Overall)
 # Creating a day and night variables 
 # Day and night periods will only refer to time under treatment as a way to 
 #   exclude the acclimation period.
 # day and night changed at about ~ 1230 on 05OCT19 
 # Treatment start date considered to begin Monday 23SEP19 at 1200pm
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 # Krill Night Starts 1200 (~1230*) and ends 2100
@@ -227,6 +229,8 @@ H2Ochemdf <- dml %>% filter(period != "other")
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+#### END OF SIMPLE DML DATA FRAME ####
+
 
 
 #*********************************
@@ -244,19 +248,27 @@ all_salinity$PSU_ObsDate <- as.Date(all_salinity$Date)
 #*********************************
 ## 8.) Creating Corrected Salinity Value   
 #*********************************
-# creating 4 new variables in dml
 
+##  Notes from the 2020.05.29 office hours 
+# creating 4 new variables in Water Chemistry Dataframe
 # create a vector 181845  for the large n17 file
 # create a vector 9283 observations long for the sub-sub sample n333 file
 # logical vectors- boolean answers to those three below conditions
-
 # 1 - the measurement per moats per day - MOATs and Data are both available
 # 2 - the measurement (averaged across moats) - group by / summarize tools
 # 3- (data gapped situation- no value matches) take the previous daily average based on observation  - lag? 
 # previous line on a dataframe ... dplyr tool ... 
-
 # https://dplyr.tidyverse.org/reference/lead-lag.html
 # 4 - "the winning value" case_when #corrected conductivity value
+
+
+# Salinity Values 
+H2Ochemdf$PSUperMOATs <- ""
+H2Ochemdf$PSUavgDaily <- ""
+H2Ochemdf$PSUprevObs <- ""
+H2Ochemdf$assumed_PSU <- ""
+H2Ochemdf$Final_PSU <- ""
+
 
 
 
@@ -266,45 +278,39 @@ all_salinity$PSU_ObsDate <- as.Date(all_salinity$Date)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 # Simple Time series plot 
-
-p <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=salinity))+
-            geom_line() + 
-            ylim (30.05, 27.00) 
-
-p
-
-p1 <- ggplot(subset(H2Ochemdf[H2Ochemdf$period == "night", ], 
-       aes(x=ObservationDate, y=Salinity))) + 
-  geom_line(aes(colour=moats, point=)) +
-  ggtitle("Salinity Values all Treatments, All MOATs, During Night Period")
-
-p1
-
-ggplot(subset(H2Ochemdf, 
-              period %in% ("night")), 
-       aes(x=ObservationDate, y=salinity)) + 
-  geom_point(aes(colour=moats, point=)) +
-  ggtitle("Salinity Values all Treatments, All MOATs, During Night Period")
-
-
-ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ], 
-              period %in% ("day")), 
-       aes(x=dateTime, y=salinity)) + 
-  geom_point(aes(colour=moats, point=)) +
-  ggtitle("Salinity Values, MOATs 01, During Night Period")
+# p <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=salinity))+
+#             geom_line() + 
+#             ylim (30.05, 27.00) 
+# p
+# 
+# p1 <- ggplot(subset(H2Ochemdf[H2Ochemdf$period == "night", ], 
+#        aes(x=ObservationDate, y=Salinity))) + 
+#   geom_line(aes(colour=moats, point=)) +
+#   ggtitle("Salinity Values all Treatments, All MOATs, During Night Period")
+# p1
+# 
+# ggplot(subset(H2Ochemdf, 
+#               period %in% ("night")), 
+#        aes(x=ObservationDate, y=salinity)) + 
+#   geom_point(aes(colour=moats, point=)) +
+#   ggtitle("Salinity Values all Treatments, All MOATs, During Night Period")
+# 
+# 
+# ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ], 
+#               period %in% ("day")), 
+#        aes(x=dateTime, y=salinity)) + 
+#   geom_point(aes(colour=moats, point=)) +
+#   ggtitle("Salinity Values, MOATs 01, During Night Period")
 
 
 
 
 #*********************************
 ## 8.2 Practical Salinity Units - Measurements Per Moats per Day 
-#                                 (Salinity Determination 
-#                                       (conditional statements))
 #*********************************
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-# Manual Readings = Many Readings
 
+# Manual Readings
 # Per MOAT measurement
 H2Ochemdf$PSUperMOATs <- all_salinity$salinity[match
                                     (paste
@@ -384,17 +390,12 @@ H2Ochemdf$Final_PSU <- 28.8
 
 #### UNDER CONSTRUCTION - HELP PLEASE OFFICE HOURS ####
 
+
+# DRAFT 1
+### Draft 1 - using the replace function
 # Replace Function Draft 1- to systematically replace the salinity values
 # replace(H2Ochemdf, Final_PSU, H2Ochemdf$PSUperMOATs)
 # replace(x, list, values)
-
-H2Ochemdf <- H2Ochemdf %>% mutate(Final_PSU=PSUperMOATs= case_when(is.na()))
-
-H2Ochemdf$Final_PSU <- H2Ochemdf$PSUperMOATs=case_when(H2Ochemdf$PSUperMOATs != "NA"))
-
-H2Ochemdf$Final_PSU <- H2Ochemdf %>% mutate(Final_PSU, case_when(is.na())
-
-
 # replace()
 # Replace gsub Function- Draft 2
 # as.character(H2Ochemdf$Final_PSU)
@@ -402,22 +403,26 @@ H2Ochemdf$Final_PSU <- H2Ochemdf %>% mutate(Final_PSU, case_when(is.na())
 # as.character(H2Ochemdf$PSUavgDaily)
 # as.character(H2Ochemdf$PSUprevObs)
 
-# gsub(Final_PSU, PSUperMOATs)
-# # Don't have an x
 
 
-#### UNDER CONSTRUCTION - HELP PLEASE OFFICE HOURS ####
-
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-# 
-# 
+# DRAFT 2
+### Draft 2 - using the the mutate case when times
+# H2Ochemdf <- H2Ochemdf %>% mutate(Final_PSU=PSUperMOATs= case_when(is.na()))
+# H2Ochemdf$Final_PSU <- H2Ochemdf$PSUperMOATs=case_when(H2Ochemdf$PSUperMOATs != "NA"))
+# H2Ochemdf$Final_PSU <- H2Ochemdf %>% mutate(Final_PSU, case_when(is.na())
 # H2Ochemdf$Conductivity <- H2Ochemdf %>% mutate
 #                               (H2Ochemdf$Conductivity=case_when(
 #                                 # conditional statements - what's the best function to make value determinations? 
 #                               ))
-# could set to 28.8 and then use the replace function, writing replacements three times
+# 
+
+# DRAFT 3
+### Draft 3 - using the gsub function
+# gsub(Final_PSU, PSUperMOATs)
+# # Don't have an x
+
+
+## CONSTRUCTION ZONE ABOVE ## CONSTRUCTION ZONE ABOVE ## CONSTRUCTION ZONE ABOVE 
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
@@ -449,8 +454,6 @@ H2Ochemdf$Final_PSU <- H2Ochemdf %>% mutate(Final_PSU, case_when(is.na())
 # sets. Most of the functions should be useful for analysis of
 # similar-frequency time series regardless of the subject
 # matter.
-
-
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -458,91 +461,47 @@ H2Ochemdf$Final_PSU <- H2Ochemdf %>% mutate(Final_PSU, case_when(is.na())
 ## 9.1) Creating Percent Dissoved Oxy Value - creating variables  
 #*********************************
 
-# Creating and naming the DO values
-# percent dissolved oxygen prcntDO
-# lab view persent of dissolved oygen
-H2Ochemdf$lb_prcntDO <- ""
-# measured percent of dissolved oxygen 
-H2Ochemdf$msr_prnctDO <-""
+#assumption with the 28.8 standard salinity reading
+H2Ochemdf$percentDOassumpt <- ""
+
+# the percent DO
+H2Ochemdf$percentDO <- "" 
+
+# Observed / Measured Salinity readings informed answers
+H2Ochemdf$obseveredSatDOmg <- ""
+H2Ochemdf$actualDOmg <- ""
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
 #*********************************
-## 9.2) Creating Percent Dissoved Oxy Value - changes to the patch
-#*********************************
-
-#observed temperature of the MOATS
-# Physical Description of the MOATS
-#sTemperature is the "system temperature". The DO probe sat in the "lower box".
-#                 The lower box, was the supply water
-#                 sat in conjunction with the short omegaL thermister and pH probe.
-#sTemperature - System Temperature
-
-### - - - - - - - - - | 
-### Paul Patch - - - -|
-### tMoats <- 12.01 - |
-### - - - - - - - - - |
-
-
-# assumed Salinity of MOATS for labiew calculation
-# 
-### - - - - - - - - - | 
-### Paul Patch - - - -|
-### assumedS <- 28.8  |
-### - - - - - - - - - |
-
-# assumed_PSU is set to 28.8 
-
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-
-#*********************************
-## 9.3) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation
+## 9.2) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation
 #*********************************
 
 
 # saturated mg/L DO at obseved temperature and assumed salinity
 # the oxySol() function is form the wql package
 
-H2Ochemdf$assumedSatDOmg <- ""
-H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$assumed_PSU)
+H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, 
+                                   H2Ochemdf$assumed_PSU)
 
-Satp <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=assumedSatDOmg))+
-  geom_line()
+Satp <- ggplot(H2Ochemdf, aes(x=ObservationDate, 
+                              y=assumedSatDOmg))+
+        geom_line()
 Satp
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-#*********************************
-## 9.4) Creating Percent Dissoved Oxy Value - Reported DOmg
-#*********************************
-
-# reported DO from labview output
-### - - - - - - - - - |
-### - - - - - - - - - |
-#reportedDOmg <- 3.56 |
-### - - - - - - - - - |
-### - - - - - - - - - |
-
-## Values for Reported DO  
-H2Ochemdf$DO
-
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-
 
 #*********************************
-## 9.5) Creating Percent Dissoved Oxy Value - Percent DO (with assumptions)
+## 9.3) Creating Percent Dissoved Oxy Value - Percent DO (with assumptions)
 #*********************************
 # Back calculated fraction DO as reported by the oxygen sensor
 
 H2Ochemdf$percentDOassumpt <- ""
-H2Ochemdf$percentDOassumpt <- H2Ochemdf$DO / assumedSatDOmg
+H2Ochemdf$percentDOassumpt <- H2Ochemdf$DO / H2Ochemdf$assumedSatDOmg
 
 
 p5 <- ggplot(H2Ochemdf, aes(x=dateTime, y=assumedSatDOmg)) +
@@ -566,7 +525,7 @@ p6
 
 
 #*********************************
-## 9.6) Creating Percent Dissoved Oxy Value - Percent DO (with observed/measured Salinity)
+## 9.4) Creating Percent Dissoved Oxy Value - Percent DO (with observed/measured Salinity)
 #*********************************
 
 # observed salinity
@@ -587,35 +546,22 @@ p6
 
 
 #*********************************
-## 9.6) Creating Percent Dissoved Oxy Value - Observed Saturated DOmg (measured salinity)
+## 9.5) Creating Percent Dissoved Oxy Value - Observed Saturated DOmg (measured salinity)
 #*********************************
 
-#satured mg/L at observed temperature and observed (not assumed) salinity
-# obseveredSatDOmg <- oxySol(tMoats, observedS)
-obseveredSatDOmg <- oxySol(sTemperature, observedS)
-
-
-
-
-
+# #satured mg/L at observed temperature and observed (not assumed) salinity
+# # obseveredSatDOmg <- oxySol(tMoats, observedS)
+# obseveredSatDOmg <- oxySol(sTemperature, observedS)
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
-
-
-
 #*********************************
-## 9.6) Creating Percent Dissoved Oxy Value - Observed Saturated DOmg (measured salinity)
+## 9.6) Creating Percent Dissoved Oxy Value - Observed/Actual DO (in mg) Saturated DOmg (measured salinity)
 #*********************************
 # actual DO mg at observed temperature and salinity
-
-actualDOmg <- percentDO * obseveredSatDOmg
-
-
-
-
+# actualDOmg <- percentDO * obseveredSatDOmg
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
