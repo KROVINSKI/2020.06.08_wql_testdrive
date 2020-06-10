@@ -13,7 +13,7 @@ library(wql)
 # sets. Most of the functions should be useful for analysis of
 # similar-frequency time series regardless of the subject
 # matter.
-
+ 
 #observed temperature of the MOATS
 tMoats <- 12.01
 # assumed salinity of MOATS for labiew calculation
