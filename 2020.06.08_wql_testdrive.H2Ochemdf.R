@@ -528,13 +528,6 @@ p6
 ## 9.4) Creating Percent Dissoved Oxy Value - Percent DO (with observed/measured Salinity)
 #*********************************
 
-# observed salinity
-### - - - - - - - - - |
-### - - - - - - - - - |
-#observedS <- 30.1 -  |
-### - - - - - - - - - |
-### - - - - - - - - - |
-
 # H2Ochemdf$Final_PSU is the value inside the dataframe after that value judgement
 
 
