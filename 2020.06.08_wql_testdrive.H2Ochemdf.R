@@ -353,9 +353,7 @@ H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
 #*********************************
 ## 8.5 Practical Salinity Units - Assumed Salinity Value 
 #*********************************
-H2Ochemdf$assumed_PSU <- ""
-H2Ochemdf$assumed_PSU <- 28.8
-
+H2Ochemdf$assumed_PSU <- "28.8"
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
@@ -385,7 +383,20 @@ H2Ochemdf$assumed_PSU <- 28.8
 
 # Final Salinity
 H2Ochemdf$Final_PSU <- ""
-H2Ochemdf$Final_PSU <- 28.8
+
+# H2Ochemdf$PSUperMOATs <- ""
+# H2Ochemdf$PSUavgDaily <- ""
+# H2Ochemdf$PSUprevObs <- ""
+# H2Ochemdf$assumed_PSU <- ""
+
+H2Ochemdf$Final_PSU <- as.numeric(case_when(
+  H2Ochemdf$PSUperMOATs != 'NA' ~ H2Ochemdf$PSUperMOATs,
+  H2Ochemdf$PSUavgDaily != 'NA' ~ H2Ochemdf$PSUavgDaily,
+  H2Ochemdf$PSUprevObs != 'NA' ~ H2Ochemdf$PSUprevObs,
+  TRUE ~ H2Ochemdf$assumed_PSU,
+  ))
+
+
 
 
 #### UNDER CONSTRUCTION - HELP PLEASE OFFICE HOURS ####
