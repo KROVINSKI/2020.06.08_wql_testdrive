@@ -354,7 +354,7 @@ H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
 ## 8.5 Practical Salinity Units - Assumed Salinity Value 
 #*********************************
 H2Ochemdf$assumed_PSU <- "28.8"
-
+H2Ochemdf$assumed_PSU <- as.numeric(H2Ochemdf$assumed_PSU)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -437,15 +437,24 @@ salinityplot
 #*********************************
 
 #assumption with the 28.8 standard salinity reading
-H2Ochemdf$percentDOassumpt
-H2Ochemdf$assumedSatDOmg 
+H2Ochemdf$percentDOassumpt <- ""
+H2Ochemdf$percentDOassumpt <- as.numeric(H2Ochemdf$percentDOassumpt)
+
+H2Ochemdf$assumedSatDOmg <- ""
+H2Ochemdf$assumedSatDOmg <- as.numeric(H2Ochemdf$assumedSatDOmg)
 
 # the percent DO
 H2Ochemdf$percentDO <- "" 
+H2Ochemdf$percentDO <- as.numeric(H2Ochemdf$percentDO)
+
 
 # Observed / Measured Salinity readings informed answers
-H2Ochemdf$obseveredSatDOmg 
-H2Ochemdf$actualDOmg 
+H2Ochemdf$obseveredSatDOmg <- "" 
+H2Ochemdf$obseveredSatDOmg <- as.numeric(H2Ochemdf$obseveredSatDOmg)
+
+
+H2Ochemdf$actualDOmg <- ""
+H2Ochemdf$actualDOmg <- as.numeric(H2Ochemdf$actualDOmg)
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
@@ -461,10 +470,11 @@ H2Ochemdf$actualDOmg
 H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, 
                                    H2Ochemdf$assumed_PSU)
 
-Satp <- ggplot(H2Ochemdf, aes(x=ObservationDate, 
+SatDOplot <- ggplot(H2Ochemdf, aes(x=ObservationDate, 
                               y=assumedSatDOmg))+
-        geom_line()
-Satp
+        geom_point() +
+        ggtitle("Assumed Saturation of Dissolved Oxygen Across all MOATS")
+SatDOplot
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
