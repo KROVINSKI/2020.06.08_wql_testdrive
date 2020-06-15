@@ -397,6 +397,15 @@ H2Ochemdf$Final_PSU <- as.numeric(case_when(
   ))
 
 
+# Simple Time series plot for final salintiy 
+salinityplot <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=Final_PSU))+
+             geom_point() + 
+             ylim (27.00, 33.00) +
+             ggtitle("Final Salinity Values, simple timeseries")
+salinityplot
+# 
+
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -428,15 +437,15 @@ H2Ochemdf$Final_PSU <- as.numeric(case_when(
 #*********************************
 
 #assumption with the 28.8 standard salinity reading
-H2Ochemdf$percentDOassumpt <- ""
+H2Ochemdf$percentDOassumpt
+H2Ochemdf$assumedSatDOmg 
 
 # the percent DO
 H2Ochemdf$percentDO <- "" 
 
 # Observed / Measured Salinity readings informed answers
-H2Ochemdf$obseveredSatDOmg <- ""
-H2Ochemdf$actualDOmg <- ""
-
+H2Ochemdf$obseveredSatDOmg 
+H2Ochemdf$actualDOmg 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
