@@ -397,51 +397,6 @@ H2Ochemdf$Final_PSU <- as.numeric(case_when(
   ))
 
 
-
-
-#### UNDER CONSTRUCTION - HELP PLEASE OFFICE HOURS ####
-
-
-# DRAFT 1
-### Draft 1 - using the replace function
-# Replace Function Draft 1- to systematically replace the salinity values
-# replace(H2Ochemdf, Final_PSU, H2Ochemdf$PSUperMOATs)
-# replace(x, list, values)
-# replace()
-# Replace gsub Function- Draft 2
-# as.character(H2Ochemdf$Final_PSU)
-# as.character(H2Ochemdf$PSUperMOATs)
-# as.character(H2Ochemdf$PSUavgDaily)
-# as.character(H2Ochemdf$PSUprevObs)
-
-
-
-# DRAFT 2
-### Draft 2 - using the the mutate case when times
-# H2Ochemdf <- H2Ochemdf %>% mutate(Final_PSU=PSUperMOATs= case_when(is.na()))
-# H2Ochemdf$Final_PSU <- H2Ochemdf$PSUperMOATs=case_when(H2Ochemdf$PSUperMOATs != "NA"))
-# H2Ochemdf$Final_PSU <- H2Ochemdf %>% mutate(Final_PSU, case_when(is.na())
-# H2Ochemdf$Conductivity <- H2Ochemdf %>% mutate
-#                               (H2Ochemdf$Conductivity=case_when(
-#                                 # conditional statements - what's the best function to make value determinations? 
-#                               ))
-# 
-
-# DRAFT 3
-### Draft 3 - using the gsub function
-# gsub(Final_PSU, PSUperMOATs)
-# # Don't have an x
-
-
-## CONSTRUCTION ZONE ABOVE ## CONSTRUCTION ZONE ABOVE ## CONSTRUCTION ZONE ABOVE 
-
-
-#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-
-# Final Method used, winning method - maybe we'll delete let's not argue in front of flipper
-# H2Ochemdf$CONDmsrMethod <- ""
-
-
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
