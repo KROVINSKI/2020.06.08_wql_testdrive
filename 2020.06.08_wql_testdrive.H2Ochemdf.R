@@ -140,17 +140,29 @@ dim(dml)
 # day and night changed at about ~ 1230 on 05OCT19 
 # Treatment start date considered to begin Monday 23SEP19 at 1200pm
 
+
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 # Krill Night Starts 1200 (~1230*) and ends 2100
 # Krill Days Starts 2101 and ends 1159 (~1229*) 
+
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 # Interval 1 start 1200 23SEP19, end 1229 05OCT19
 # Interval 2 start 1230 05OCT19, end 2100 30OCT19
 
+
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 # Concept Diagram graphic saved at /Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/Day_Night Period Loop.pdf/
+
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
@@ -158,12 +170,16 @@ dim(dml)
 #creating a new column, new variable "period"
 dml$period <- ""
 
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 ## 6.3 Disassembling dateTime to create 2 new variables
 # Create new split date and time columns
 dml$ObservationDate <- as.Date(dml$dateTime)
 dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
@@ -456,6 +472,14 @@ H2Ochemdf$obseveredSatDOmg <- as.numeric(H2Ochemdf$obseveredSatDOmg)
 H2Ochemdf$actualDOmg <- ""
 H2Ochemdf$actualDOmg <- as.numeric(H2Ochemdf$actualDOmg)
 
+# Review of Values
+H2Ochemdf$percentDOassumpt
+H2Ochemdf$assumedSatDOmg
+H2Ochemdf$percentDO
+H2Ochemdf$obseveredSatDOmg
+H2Ochemdf$actualDOmg
+
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -466,14 +490,15 @@ H2Ochemdf$actualDOmg <- as.numeric(H2Ochemdf$actualDOmg)
 
 # saturated mg/L DO at obseved temperature and assumed salinity
 # the oxySol() function is form the wql package
-
 H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, 
                                    H2Ochemdf$assumed_PSU)
+
 
 SatDOplot <- ggplot(H2Ochemdf, aes(x=ObservationDate, 
                               y=assumedSatDOmg))+
         geom_point() +
         ggtitle("Assumed Saturation of Dissolved Oxygen Across all MOATS")
+
 SatDOplot
 
 
@@ -506,8 +531,9 @@ p5
 #*********************************
 
 # #satured mg/L at observed temperature and observed (not assumed) salinity
-obseveredSatDOmg <- oxySol(, observedS)
-obseveredSatDOmg <- oxySol(sTemperature, observedS)
+H2Ochemdf$sTemperature <- as.numeric(H2Ochemdf$sTemperature)
+
+obseveredSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$Final_PSU)
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
