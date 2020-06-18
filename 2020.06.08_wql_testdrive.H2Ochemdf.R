@@ -369,8 +369,7 @@ H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
 #*********************************
 ## 8.5 Practical Salinity Units - Assumed Salinity Value 
 #*********************************
-H2Ochemdf$assumed_PSU <- "28.8"
-H2Ochemdf$assumed_PSU <- as.numeric(H2Ochemdf$assumed_PSU)
+H2Ochemdf$assumed_PSU <- 28.8
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -398,7 +397,7 @@ H2Ochemdf$assumed_PSU <- as.numeric(H2Ochemdf$assumed_PSU)
 
 
 # Final Salinity
-H2Ochemdf$Final_PSU <- ""
+H2Ochemdf$Final_PSU <- 0.0
 
 # H2Ochemdf$PSUperMOATs <- ""
 # H2Ochemdf$PSUavgDaily <- ""
@@ -409,7 +408,7 @@ H2Ochemdf$Final_PSU <- as.numeric(case_when(
   H2Ochemdf$PSUperMOATs != 'NA' ~ H2Ochemdf$PSUperMOATs,
   H2Ochemdf$PSUavgDaily != 'NA' ~ H2Ochemdf$PSUavgDaily,
   H2Ochemdf$PSUprevObs != 'NA' ~ H2Ochemdf$PSUprevObs,
-  TRUE ~ H2Ochemdf$assumed_PSU,
+  TRUE ~ as.character(H2Ochemdf$assumed_PSU),
   ))
 
 
@@ -533,7 +532,7 @@ p5
 # #satured mg/L at observed temperature and observed (not assumed) salinity
 H2Ochemdf$sTemperature <- as.numeric(H2Ochemdf$sTemperature)
 
-obseveredSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$Final_PSU)
+H2Ochemdf$obseveredSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$Final_PSU)
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
