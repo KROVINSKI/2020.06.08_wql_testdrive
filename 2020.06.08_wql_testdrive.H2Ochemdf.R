@@ -535,6 +535,9 @@ H2Ochemdf$sTemperature <- as.numeric(H2Ochemdf$sTemperature)
 H2Ochemdf$obseveredSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$Final_PSU)
 
 
+
+
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
@@ -542,7 +545,16 @@ H2Ochemdf$obseveredSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$Final_PSU
 ## 9.6) Creating Percent Dissoved Oxy Value - Observed/Actual DO (in mg) Saturated DOmg (measured salinity)
 #*********************************
 # actual DO mg at observed temperature and salinity
-# actualDOmg <- percentDO * obseveredSatDOmg
+H2Ochemdf$percentDO <- H2Ochemdf$DO / H2Ochemdf$assumedSatDOmg
+
+H2Ochemdf$actualDOmg <- H2Ochemdf$percentDO * H2Ochemdf$obseveredSatDOmg
+
+
+actualDOmgPLOT <- ggplot(H2Ochemdf, aes(x=dateTime, y=H2Ochemdf$actualDOmg)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("Actual DO (mg/L) (All Treatments & All MOATs) Colored by Period")
+
+actualDOmgPLOT
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
