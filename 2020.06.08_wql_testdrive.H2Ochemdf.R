@@ -559,6 +559,40 @@ actualDOmgPLOT
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
+# A Function to rule them all 
+# Assumed DO values to corrected DO values with measured Salinity
+
+# 
+# bombadil_DO <- function(H2Ochemdf$DO,
+#                         H2Ochemdf$assumedSatDOmg
+#                         H2Ochemdf$percentDOassumpt,
+#                         H2Ochemdf$sTemperature
+#                         H2Ochemdf$percentDO, 
+#                         H2Ochemdf$obseveredSatDOmg,
+#                         H2Ochemdf$Final_PSU) {
+#               bombadil_DOmgL <- H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, 
+#                                                                    H2Ochemdf$assumed_PSU)
+#               return(H2Ochemdf$actualDOmg)
+# }
+
+#### CONSTRUCTION ZONE - FUNCTION no FUNCTION####
+
+ReasonableMOATdata <- function(#data 1st arg I want it to set a dataframe
+                                moatsfilter, 
+                               Tempfilter, 
+                               Treatmentfilter, 
+                               periodfitler){
+                      moatsfilter<- #data #reference that dataframe
+                        filter(!moats %in% c("M03", "M04", "M05", "M11")),
+                      
+                      Tempfilter <- filter(aTemperature>= 5 & aTemperature<=30),
+                      Treatmentfilter <- filter(treatment %in% c("current", "allchange", "hightemperature")), 
+                      periodfitler <- filter(period != "other")
+                      return(#updated dataframe)
+}
+  
+
+  
 
 
 
