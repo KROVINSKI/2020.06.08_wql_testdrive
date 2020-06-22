@@ -42,6 +42,7 @@ library(wql)
 # 7. Salinity (4 New Vectors)
 # 8. Creating Corrected Salinity Value 
 # 9. DO
+# 10. Filtering Water Chemistry Dataframe
 
 # 0. placeholder
 # 5. placeHODOR
@@ -559,10 +560,11 @@ actualDOmgPLOT
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
+
+#### CONSTRUCTION ZONE - FUNCTION no FUNCTION####
 # A Function to rule them all 
 # Assumed DO values to corrected DO values with measured Salinity
 
-# 
 # bombadil_DO <- function(H2Ochemdf$DO,
 #                         H2Ochemdf$assumedSatDOmg
 #                         H2Ochemdf$percentDOassumpt,
@@ -575,46 +577,158 @@ actualDOmgPLOT
 #               return(H2Ochemdf$actualDOmg)
 # }
 
-#### CONSTRUCTION ZONE - FUNCTION no FUNCTION####
-
-ReasonableMOATdata <- function(#data 1st arg I want it to set a dataframe
-                                moatsfilter, 
-                               Tempfilter, 
-                               Treatmentfilter, 
-                               periodfitler){
-                      moatsfilter<- #data #reference that dataframe
-                        filter(!moats %in% c("M03", "M04", "M05", "M11")),
-                      
-                      Tempfilter <- filter(aTemperature>= 5 & aTemperature<=30),
-                      Treatmentfilter <- filter(treatment %in% c("current", "allchange", "hightemperature")), 
-                      periodfitler <- filter(period != "other")
-                      return(#updated dataframe)
-}
-
-#take two
-
-# think about default values for items of the arglist
+# ReasonableMOATdata <- function(#data 1st arg I want it to set a dataframe
+#                                 moatsfilter, 
+#                                Tempfilter, 
+#                                Treatmentfilter, 
+#                                periodfitler){
+#                       moatsfilter<- #data #reference that dataframe
+#                         filter(!moats %in% c("M03", "M04", "M05", "M11")),
+#                       
+#                       Tempfilter <- filter(aTemperature>= 5 & aTemperature<=30),
+#                       Treatmentfilter <- filter(treatment %in% c("current", "allchange", "hightemperature")), 
+#                       periodfitler <- filter(period != "other")
+#                       return(#updated dataframe)
+# }
+# 
+# #take two
+# 
+# # think about default values for items of the arglist
 
 
-ReasonableMOATdata <- function(data,
-                                moatsfilter, 
-                                mintemp,  
-                                maxtemp, 
-                                Treatmentfilter, 
-                                periodfitler) {
-                                data_moatsfilter<- data %>% filter(!moats %in% moatsfilter)
-                                data_Tempfilter <- data_moatsfilter %>% filter(aTemperature>= mintemp & aTemperature<=maxtemp)
-                                data_Treatmentfilter <- data_Tempfilter %>% filter(treatment %in% Treatmentfilter)
-                                data_periodfitler <- data_Treatmentfilter %>% filter(period != "other")
-                                return(data_periodfitler)
-}
-  
 
-ReasonableMOATdata(data=H2Ochemdf, 
-                   moatsfilter=c("M03", "M11"), 
-                          mintemp=5,  maxtemp=30, 
-                                Treatmentfilter=c("current", "allchange", "hightemperature"), 
-                                    periodfitler = c("day", "night")) 
+
+#*********************************
+## 10.0) Filtering Data
+#*********************************
+
+
+H2Ochemdf <- H2Ochemdf  %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
+  filter(sTemperature>= 5 & sTemperature<=30) %>%
+  filter(treatment %in% c("current", "allchange", "hightemperature")) %>%
+  filter(period != "other")
+
+
+# 
+# ReasonableMOATdata <- function(data,
+#                                 moatsfilter, 
+#                                 mintemp,  
+#                                 maxtemp, 
+#                                 Treatmentfilter, 
+#                                 periodfitler) {
+#                                 data_moatsfilter<- data %>% filter(!moats %in% moatsfilter)
+#                                 data_Tempfilter <- data_moatsfilter %>% filter(aTemperature>= mintemp & aTemperature<=maxtemp)
+#                                 data_Treatmentfilter <- data_Tempfilter %>% filter(treatment %in% Treatmentfilter)
+#                                 data_periodfitler <- data_Treatmentfilter %>% filter(period != "other")
+#                                 return(data_periodfitler)
+# }
+#   
+# 
+# ReasonableMOATdata(data=H2Ochemdf, 
+#                    moatsfilter=c("M03", "M11"), 
+#                           mintemp=5,  maxtemp=30, 
+#                                 Treatmentfilter=c("current", "allchange", "hightemperature"), 
+#                                     periodfitler = c("day", "night")) 
+
+#*********************************
+## 10.1) Filtering Data- dropping lvls to clean graphs
+#*********************************
+
+
+filteredFrame = filter(H2Ochemdf,
+                       !moats %in% c('M03', "M04", "M05", "M11") & 
+                         (aTemperature>= 5 & aTemperature<=30) &
+                         treatment %in% c("current", "allchange", "hightemperature") &
+                         period != "other")
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+## 10.1a Dropping levels and factors
+filteredFrame$moats <- droplevels(filteredFrame$moats)
+filteredFrame$treatment <- factor(filteredFrame$treatment)
+
+
+
+#*********************************
+## 11) DO averages- days and nights
+#*********************************
+
+# Creating Values
+# Day
+
+allchgDayDO <- subset(H2Ochemdf, 
+                      period == "day" & treatment == "allchange",
+                      select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+
+curDayDO <- subset(H2Ochemdf, 
+                   period == "day" & treatment == "current",
+                   select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+
+hitempDayDO <- subset(H2Ochemdf, 
+                      period == "day" & treatment == "hightemperature",
+                      select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+# Night
+
+allchgNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "allchange",
+                        select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+
+curNightDO <- subset(H2Ochemdf, 
+                     period == "night" & treatment == "current",
+                     select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+
+hitempNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "hightemperature",
+                        select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+# Review of values
+allchgDayDO
+allchgNightDO
+curDayDO
+curNightDO
+hitempDayDO
+hitempNightDO
+
+
+
+
+#*********************************
+## 12) DO Day/Night Summary
+#*********************************
+
+
+H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
+  summarize(sd = sd(H2Ochemdf$actualDOmg, na.rm = TRUE), 
+            mean = mean(H2Ochemdf$actualDOmg, na.rm = TRUE), 
+            median = median(H2Ochemdf$actualDOmg, na.rm = TRUE),
+            IQR = IQR(H2Ochemdf$actualDOmg, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
