@@ -590,9 +590,33 @@ ReasonableMOATdata <- function(#data 1st arg I want it to set a dataframe
                       periodfitler <- filter(period != "other")
                       return(#updated dataframe)
 }
+
+#take two
+
+# think about default values for items of the arglist
+
+
+ReasonableMOATdata <- function(data,
+                                moatsfilter, 
+                                mintemp,  
+                                maxtemp, 
+                                Treatmentfilter, 
+                                periodfitler) {
+                                data_moatsfilter<- data %>% filter(!moats %in% moatsfilter)
+                                data_Tempfilter <- data_moatsfilter %>% filter(aTemperature>= mintemp & aTemperature<=maxtemp)
+                                data_Treatmentfilter <- data_Tempfilter %>% filter(treatment %in% Treatmentfilter)
+                                data_periodfitler <- data_Treatmentfilter %>% filter(period != "other")
+                                return(data_periodfitler)
+}
   
 
-  
+ReasonableMOATdata(data=H2Ochemdf, 
+                   moatsfilter=c("M03", "M11"), 
+                          mintemp=5,  maxtemp=30, 
+                                Treatmentfilter=c("current", "allchange", "hightemperature"), 
+                                    periodfitler = c("day", "night")) 
+
+
 
 
 
